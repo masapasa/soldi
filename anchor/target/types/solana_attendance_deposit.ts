@@ -1,0 +1,755 @@
+export type SolanaAttendanceDeposit = {
+  "version": "0.1.0",
+  "name": "solana_attendance_deposit",
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createCourse",
+      "accounts": [
+        {
+          "name": "course",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "manager",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "deposit",
+          "type": "u64"
+        },
+        {
+          "name": "lockUntil",
+          "type": "u64"
+        },
+        {
+          "name": "numOfLessons",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "register",
+      "accounts": [
+        {
+          "name": "course",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "student",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "studentUsdc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "courseUsdc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createLesson",
+      "accounts": [
+        {
+          "name": "lesson",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "course",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "manager",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "attendanceDeadline",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "markAttendance",
+      "accounts": [
+        {
+          "name": "course",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "attendance",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "lesson",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "student",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "lessonId",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "withdraw",
+      "accounts": [
+        {
+          "name": "course",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "attendance",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "student",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "studentUsdc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "courseUsdc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "attendance",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "course",
+            "type": "publicKey"
+          },
+          {
+            "name": "student",
+            "type": "publicKey"
+          },
+          {
+            "name": "attendance",
+            "type": "bytes"
+          },
+          {
+            "name": "withdrawn",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "course",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "manager",
+            "type": "publicKey"
+          },
+          {
+            "name": "students",
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "deposit",
+            "type": "u64"
+          },
+          {
+            "name": "lockUntil",
+            "type": "u64"
+          },
+          {
+            "name": "numOfLessons",
+            "type": "u8"
+          },
+          {
+            "name": "lastLessonId",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "courseManager",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "manager",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "lesson",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "course",
+            "type": "publicKey"
+          },
+          {
+            "name": "lessonId",
+            "type": "u8"
+          },
+          {
+            "name": "attendanceDeadline",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "StudentNotEnrolled",
+      "msg": "Student is not enrolled in the course"
+    },
+    {
+      "code": 6001,
+      "name": "StudentAlreadyEnrolled",
+      "msg": "Student already enrolled in the course"
+    },
+    {
+      "code": 6002,
+      "name": "InsufficientUsdcDeposit",
+      "msg": "Insufficient USDCC balance for deposit"
+    },
+    {
+      "code": 6003,
+      "name": "UnauthorizedAccess",
+      "msg": "Unauthorised access"
+    },
+    {
+      "code": 6004,
+      "name": "ExceededCourseLessons"
+    },
+    {
+      "code": 6005,
+      "name": "CreateLessonNotLatest"
+    },
+    {
+      "code": 6006,
+      "name": "AttendanceAlreadyMarked"
+    },
+    {
+      "code": 6007,
+      "name": "LateForLesson"
+    },
+    {
+      "code": 6008,
+      "name": "NotReadyForWithdrawal"
+    }
+  ]
+};
+
+export const IDL: SolanaAttendanceDeposit = {
+  "version": "0.1.0",
+  "name": "solana_attendance_deposit",
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createCourse",
+      "accounts": [
+        {
+          "name": "course",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "manager",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "deposit",
+          "type": "u64"
+        },
+        {
+          "name": "lockUntil",
+          "type": "u64"
+        },
+        {
+          "name": "numOfLessons",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "register",
+      "accounts": [
+        {
+          "name": "course",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "student",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "studentUsdc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "courseUsdc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createLesson",
+      "accounts": [
+        {
+          "name": "lesson",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "course",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "manager",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "attendanceDeadline",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "markAttendance",
+      "accounts": [
+        {
+          "name": "course",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "attendance",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "lesson",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "student",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "lessonId",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "withdraw",
+      "accounts": [
+        {
+          "name": "course",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "attendance",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "student",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "studentUsdc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "courseUsdc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "attendance",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "course",
+            "type": "publicKey"
+          },
+          {
+            "name": "student",
+            "type": "publicKey"
+          },
+          {
+            "name": "attendance",
+            "type": "bytes"
+          },
+          {
+            "name": "withdrawn",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "course",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "manager",
+            "type": "publicKey"
+          },
+          {
+            "name": "students",
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "deposit",
+            "type": "u64"
+          },
+          {
+            "name": "lockUntil",
+            "type": "u64"
+          },
+          {
+            "name": "numOfLessons",
+            "type": "u8"
+          },
+          {
+            "name": "lastLessonId",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "courseManager",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "manager",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "lesson",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "course",
+            "type": "publicKey"
+          },
+          {
+            "name": "lessonId",
+            "type": "u8"
+          },
+          {
+            "name": "attendanceDeadline",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "StudentNotEnrolled",
+      "msg": "Student is not enrolled in the course"
+    },
+    {
+      "code": 6001,
+      "name": "StudentAlreadyEnrolled",
+      "msg": "Student already enrolled in the course"
+    },
+    {
+      "code": 6002,
+      "name": "InsufficientUsdcDeposit",
+      "msg": "Insufficient USDCC balance for deposit"
+    },
+    {
+      "code": 6003,
+      "name": "UnauthorizedAccess",
+      "msg": "Unauthorised access"
+    },
+    {
+      "code": 6004,
+      "name": "ExceededCourseLessons"
+    },
+    {
+      "code": 6005,
+      "name": "CreateLessonNotLatest"
+    },
+    {
+      "code": 6006,
+      "name": "AttendanceAlreadyMarked"
+    },
+    {
+      "code": 6007,
+      "name": "LateForLesson"
+    },
+    {
+      "code": 6008,
+      "name": "NotReadyForWithdrawal"
+    }
+  ]
+};
