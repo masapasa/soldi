@@ -16,11 +16,11 @@ pub struct Initialize<'info> {
 #[instruction(name: String)]
 pub struct NewCourse<'info> {
     #[account(
-    init,
-    payer = manager,
-    space = 8 + std::mem::size_of::< Course > (),
-    seeds = [name.as_bytes()],
-    bump,
+        init,
+        payer = manager,
+        space = 8 + std::mem::size_of::< Course > (),
+        seeds = [name.as_bytes()],
+        bump,
     )]
     pub course: Account<'info, Course>,
     #[account(mut)]
@@ -31,29 +31,29 @@ pub struct NewCourse<'info> {
 #[derive(Accounts)]
 pub struct Registration<'info> {
     #[account(
-    mut,
-    seeds = [course.name.as_bytes()],
-    bump,
-    constraint = course.last_lesson_id == 0,
-    realloc = course.to_account_info().data_len() + std::mem::size_of::< Pubkey > (),
-    realloc::payer = student,
-    realloc::zero = false,
+        mut,
+        seeds = [course.name.as_bytes()],
+        bump,
+        constraint = course.last_lesson_id == 0,
+        realloc = course.to_account_info().data_len() + std::mem::size_of::< Pubkey > (),
+        realloc::payer = student,
+        realloc::zero = false,
     )]
     pub course: Account<'info, Course>,
     #[account(mut)]
     pub student: Signer<'info>,
     #[account(
-    init_if_needed,
-    payer = student,
-    associated_token::mint = usdc_mint,
-    associated_token::authority = student,
+        init_if_needed,
+        payer = student,
+        associated_token::mint = usdc_mint,
+        associated_token::authority = student,
     )]
     pub student_usdc: Account<'info, TokenAccount>,
     #[account(
-    init_if_needed,
-    payer = student,
-    associated_token::mint = usdc_mint,
-    associated_token::authority = course,
+        init_if_needed,
+        payer = student,
+        associated_token::mint = usdc_mint,
+        associated_token::authority = course,
     )]
     pub course_usdc: Account<'info, TokenAccount>,
     pub usdc_mint: Account<'info, Mint>,
@@ -66,11 +66,11 @@ pub struct Registration<'info> {
 #[instruction(attendance_deadline: u64)]
 pub struct CreateLesson<'info> {
     #[account(
-    init,
-    payer = manager,
-    space = 8 + std::mem::size_of::< Lesson > (),
-    seeds = [course.key().as_ref(), & (course.last_lesson_id + 1).to_be_bytes()],
-    bump,
+        init,
+        payer = manager,
+        space = 8 + std::mem::size_of::< Lesson > (),
+        seeds = [course.key().as_ref(), & (course.last_lesson_id + 1).to_be_bytes()],
+        bump,
     )]
     pub lesson: Account<'info, Lesson>,
     #[account(mut)]
@@ -84,18 +84,18 @@ pub struct CreateLesson<'info> {
 #[derive(Accounts)]
 pub struct MarkAttendance<'info> {
     #[account(
-    mut,
-    seeds = [course.name.as_bytes()],
-    bump,
+        mut,
+        seeds = [course.name.as_bytes()],
+        bump,
     )]
     pub course: Account<'info, Course>,
     #[account(
-    init_if_needed,
-    payer = student,
-    space = 8 + std::mem::size_of::< Attendance > () + course.num_of_lessons as usize,
-    constraint = course.key() == lesson.course,
-    seeds = [course.name.as_bytes(), student.key().as_ref()],
-    bump,
+        init_if_needed,
+        payer = student,
+        space = 8 + std::mem::size_of::< Attendance > () + course.num_of_lessons as usize,
+        constraint = course.key() == lesson.course,
+        seeds = [course.name.as_bytes(), student.key().as_ref()],
+        bump,
     )]
     pub attendance: Account<'info, Attendance>,
     pub lesson: Account<'info, Lesson>,
@@ -107,14 +107,14 @@ pub struct MarkAttendance<'info> {
 #[derive(Accounts)]
 pub struct Withdrawal<'info> {
     #[account(
-    mut,
-    seeds = [course.name.as_bytes()],
-    bump,
+        mut,
+        seeds = [course.name.as_bytes()],
+        bump,
     )]
     pub course: Account<'info, Course>,
     #[account(
-    mut,
-    constraint = ! attendance.withdrawn,
+        mut,
+        constraint = !attendance.withdrawn,
     )]
     pub attendance: Account<'info, Attendance>,
     #[account(mut)]
@@ -122,14 +122,34 @@ pub struct Withdrawal<'info> {
     #[account(mut)]
     pub student_usdc: Account<'info, TokenAccount>,
     #[account(
-    mut,
-    constraint = course.key() == attendance.course &&
-    student.key() == attendance.student &&
-    attendance.attendance.len() == course.num_of_lessons as usize &&
-    ! attendance.withdrawn,
+        mut,
+        constraint = course.key() == attendance.course &&
+            student.key() == attendance.student &&
+            attendance.attendance.len() == course.num_of_lessons as usize &&
+            !attendance.withdrawn,
     )]
     pub course_usdc: Account<'info, TokenAccount>,
     pub usdc_mint: Account<'info, Mint>,
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
+}
+
+#[derive(Accounts)]
+pub struct LoanContext<'info> {
+    #[account(init, payer = borrower, space = 8 + std::mem::size_of::< Loan > ())]
+    pub loan: Account<'info, Loan>,
+    #[account(mut)]
+    pub borrower: Signer<'info>,
+    pub lender: AccountInfo<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct FeedbackContext<'info> {
+    #[account(init, payer = student, space = 8 + std::mem::size_of::< Feedback > ())]
+    pub feedback: Account<'info, Feedback>,
+    pub course: Account<'info, Course>,
+    #[account(mut)]
+    pub student: Signer<'info>,
+    pub system_program: Program<'info, System>,
 }
