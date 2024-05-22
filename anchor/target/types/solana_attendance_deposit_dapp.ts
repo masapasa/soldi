@@ -1,6 +1,6 @@
 export type SolanaAttendanceDepositDapp = {
   "version": "0.1.0",
-  "name": "solana_attendance_deposit_dapp",
+  "name": "soldi",
   "instructions": [
     {
       "name": "initialize",
@@ -373,7 +373,7 @@ export type SolanaAttendanceDepositDapp = {
 
 export const IDL: SolanaAttendanceDepositDapp = {
   "version": "0.1.0",
-  "name": "solana_attendance_deposit_dapp",
+  "name": "soldi",
   "instructions": [
     {
       "name": "initialize",

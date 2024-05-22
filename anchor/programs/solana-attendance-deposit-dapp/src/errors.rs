@@ -1,18 +1,21 @@
-use anchor_lang::error_code;
+use anchor_lang::prelude::*;
 
 #[error_code]
 pub enum ErrorCode {
-    #[msg("Student is not enrolled in the course")]
+    #[msg("Insufficient USDC deposit")]
+    InsufficientUsdcDeposit,
+    #[msg("Unauthorized access")]
+    UnauthorizedAccess,
+    #[msg("Student not enrolled in the course")]
     StudentNotEnrolled,
+    #[msg("Attendance already marked for the lesson")]
+    AttendanceAlreadyMarked,
+    #[msg("Late for the lesson")]
+    LateForLesson,
+    #[msg("Not ready for withdrawal")]
+    NotReadyForWithdrawal,
     #[msg("Student already enrolled in the course")]
     StudentAlreadyEnrolled,
-    #[msg("Insufficient USDCC balance for deposit")]
-    InsufficientUsdcDeposit,
-    #[msg("Unauthorised access")]
-    UnauthorizedAccess,
+    #[msg("Exceeded the maximum number of lessons for the course")]
     ExceededCourseLessons,
-    CreateLessonNotLatest,
-    AttendanceAlreadyMarked,
-    LateForLesson,
-    NotReadyForWithdrawal,
 }

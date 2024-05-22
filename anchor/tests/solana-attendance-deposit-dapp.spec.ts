@@ -1,8 +1,8 @@
 import * as anchor from '@coral-xyz/anchor';
 import { Program } from '@coral-xyz/anchor';
-import { SolanaAttendanceDepositDapp } from '../target/types/solana_attendance_deposit_dapp';
+import { SolanaAttendanceDepositDapp } from '../target/types/soldi';
 
-describe('solana-attendance-deposit-dapp', () => {
+describe('soldi', () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
 
