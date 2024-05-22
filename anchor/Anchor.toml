@@ -6,7 +6,7 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-solana_attendance_deposit_dapp = "3XkjQ2Z5QFVnrccwn7e58jyuCTk8DbPk39cuS8PAZkD8"
+soldi = "3XkjQ2Z5QFVnrccwn7e58jyuCTk8DbPk39cuS8PAZkD8"
 
 [registry]
 url = "https://api.apr.dev"

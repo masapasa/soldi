@@ -8,7 +8,7 @@ use program_accounts::structs::*;
 declare_id!("3XkjQ2Z5QFVnrccwn7e58jyuCTk8DbPk39cuS8PAZkD8");
 
 #[program]
-pub mod solana_attendance_deposit_dapp {
+pub mod soldi {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
